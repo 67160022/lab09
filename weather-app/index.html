@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="th">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Weather App</title>
+    <link rel="stylesheet" href="styles.css" />
+    <body>
+      <div class="container">
+        <h1>Weather App</h1>
+
+        <!-- Search Section -->
+        <div class="search-section">
+          <div class="search-box">
+            <input
+              type="text"
+              id="cityInput"
+              placeholder="ค้นหาเมือง (เช่น Bangkok, Tokyo, London)..."
+              autocomplete="off"
+            />
+            <button id="searchBtn">ค้นหา</button>
+          </div>
+
+          <div id="recentCities" class="recent-cities"></div>
+        </div>
+
+        <!-- Error Message -->
+        <div id="errorMsg" class="error"></div>
+
+        <!-- Loading State -->
+        <div id="loading" class="loading">
+          <div class="spinner"></div>
+          <p>กำลังดึงข้อมูล...</p>
+        </div>
+
+        <!-- Weather Display -->
+        <div id="weatherContainer" class="weather-container">
+          <div class="weather-header">
+            <div class="city-name" id="cityName">--</div>
+            <div class="update-time" id="updateTime">--</div>
+          </div>
+
+          <div class="temperature-section">
+            <div class="weather-description" id="description">--</div>
+            <div class="temperature" id="temperature">--°C</div>
+            <div class="feels-like" id="feelsLike">--</div>
+          </div>
+
+          <div class="weather-details">
+            <div class="detail-card">
+              <div class="detail-label">💧 ความชื้น</div>
+              <div class="detail-value" id="humidity">--%</div>
+            </div>
+            <div class="detail-card">
+              <div class="detail-label">💨 ความเร็วลม</div>
+              <div class="detail-value" id="windSpeed">-- m/s</div>
+            </div>
+            <div class="detail-card">
+              <div class="detail-label">🔽 ความกดอากาศ</div>
+              <div class="detail-value" id="pressure">-- hPa</div>
+            </div>
+            <div class="detail-card">
+              <div class="detail-label">👁️ ระยะมองเห็น</div>
+              <div class="detail-value" id="visibility">-- km</div>
+            </div>
+          </div>
+
+          <div class="hourly-forecast" id="hourlySection" style="display: none">
+            <div class="hourly-title">
+              📈 อุณหภูมิรายชั่วโมง (24 ชั่วโมงข้างหน้า)
+            </div>
+            <div class="hourly-list" id="hourlyList"></div>
+          </div>
+        </div>
+
+        <!-- Empty State -->
+        <div id="emptyState" class="empty-state">
+          <div class="empty-icon">🌍</div>
+          <div class="empty-text">ค้นหาเมืองเพื่อดูสภาพอากาศ</div>
+        </div>
+      </div>
+      <script src="app.js"></script>
+    </body>
+  </head>
+</html>

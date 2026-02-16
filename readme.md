@@ -1,4 +1,4 @@
-# LAB09
+# LAB09-TODO
 
 ## ส่วนที่ 1 : การทำความเข้าใจโค้ด
 
@@ -177,3 +177,229 @@
 
 - มี ถ้าไม่ clearInterval() ตอนลบ task
   interval จะค้างอยู่ในหน่วยความจำ
+
+# LAB09-Pomodoro Timer App
+
+## ส่วนที่ 1 : ความเข้าใจเทคนิค Pomodoro
+
+**1.1เทคนิค Pomodoro คืออะไร เหตุใดจึงเลือกใช้เวลา 25 นาที สำหรับการทำงาน**
+
+**ตอบ**
+
+- Pomodoro คือเทคนิคแบ่งเวลาทำงานเป็นช่วงสั้น ๆ เพื่อเพิ่มสมาธิ25 นาทีเป็นเวลาที่สมองโฟกัสได้ดีโดยไม่ล้าเกินไป
+
+**1.2หากต้องการปรับเวลา Work/Break ให้แตกต่างจาก default (25/5) จะต้องแก้ไขโค้ดส่วนไหน**
+
+**ตอบ**
+
+- workDuration
+
+- breakDuration
+
+- input workTimeInput และ breakTimeInput
+
+**1.3ทำไมหลังจาก 4 รอบ (pomodoros) จึงมี Long Break ขนาด 15 นาที ประโยชน์คืออะไร**
+
+**ตอบ**
+
+- เพื่อให้สมองพักจริง ลดอาการล้าช่วยให้โฟกัสระยะยาวได้ดีขึ้น
+
+## ส่วนที่ 2 : การจัดโครงสร้าง State
+
+**2.1ปัจจุบัน app เก็บ state อะไรบ้าง เช่น: เวลาที่เหลือ ,Phase(work/break),Rounds counter ,...อื่นๆ**
+
+**ตอบ**
+
+- timeLeft → เวลาที่เหลือ
+- isWorkPhase → Work / Break
+- currentSession → รอบปัจจุบัน
+- completedSessions → รอบที่ทำเสร็จ
+- isRunning → timer ทำงานหรือไม่
+- intervalId → อ้างอิง setInterval
+
+**2.2ทำไมจึงต้องมี rounds state หากแค่เก็บ phase ก็พอ**
+
+**ตอบ**
+
+- เพราะ phase อย่างเดียวไม่รู้ว่าทำไปกี่รอบจำเป็นสำหรับ logic Long Break
+
+**2.3ถ้าต้องการให้ Pomodoro Count อัปเดต เมื่อจบแต่ละ Work phase จะแก้ไขฟังก์ชัน completePhase() ยังไง**
+
+**ตอบ**
+
+## ส่วนที่ 3 : Timer Logic
+
+**3.1อธิบายการทำงานของ setInterval() ในส่วน timer - จะเกิดอะไรขึ้นทุก 1 วินาที**
+
+**ตอบ**
+
+- ทุก 1 วินาที จะลด timeLeft , เช็กว่าเวลาหมดรึยัง , อัปเดต UI
+
+**3.2เหตุใดจึงต้องมี timerInterval เป็น global variable ถ้าไม่มี app จะเป็นยังไง**
+
+**ตอบ**
+
+- เพื่อให้หยุด timer ได้จากหลายฟังก์ชันถ้าไม่เป็น global จะ clearInterval ไม่ได้
+
+**3.3ถ้าผู้ใช้คลิก "เริ่ม" 2 ครั้งติดต่อกัน จะเกิดอะไรขึ้น มีวิธีแก้หรือไม่**
+
+**ตอบ**
+
+- โค้ดเช็ก isRunning จึงไม่สร้าง interval ซ้ำเป็นการป้องกัน bug แล้ว
+
+## ส่วนที่ 4 : DOM & UI
+
+**4.1ฟังก์ชัน updateDisplay() ทำอะไร ต้องเรียกจากที่ไหนบ้าง**
+
+**ตอบ**
+
+- อัปเดต:
+  เวลา
+  phase
+  ปุ่ม
+  progress bar
+  stats
+- ต้องเรียกทุกครั้งที่ state เปลี่ยน
+
+**4.2formatTime() ใช้ padding ด้วย padStart(2, "0") เพื่ออะไร ถ้าไม่มี timer จะแสดง 5:3 แทน 05:03 ได้หรือไม่**
+
+**ตอบ**
+
+- เพื่อให้แสดงเวลาเป็น 05:03 ถ้าไม่ใช้ จะได้ 5:3 ซึ่งดูไม่สวย
+
+**4.3Progress bar คำนวณเปอร์เซ็นต์ยังไง เขียนสูตรออกมา**
+
+**ตอบ**
+
+- progress = (เวลาที่ผ่านไป / เวลาทั้งหมด) × 100
+
+## ส่วนที่ 5 : Events & Controls
+
+**5.1ปุ่มควบคุมมีอะไรบ้าง (Start, Pause, Reset, Settings) แต่ละปุ่มเรียกฟังก์ชันไหน**
+
+**ตอบ**
+
+- start / Pause -> startTimer()
+- Reset -> resetTimer()
+- Setting -> input change event
+
+**5.2ทำไม Pause ต้องหยุด timer ด้วย clearInterval() หากไม่ทำจะไปไป**
+
+**ตอบ**
+
+- ถ้าไม่ clear timer จะยังเดินอยู่เบื้องหลัง
+
+**5.3Reset button ควรตั้งค่ากลับเป็นอะไร:**
+
+**ตอบ**
+
+- timeLeft
+- isWorkPhase
+- currentSession
+- intervalId
+
+## ส่วนที่ 6 : Notification & Soung
+
+**6.1ฟังก์ชัน playSound() ใช้เทคนิคอะไรในการสร้างเสียง (Web Audio API? HTML Audio?)**
+
+**ตอบ**
+
+- ใช้ Web Audio API (Oscillator)
+
+**6.2ทำไม notification ควร work/break ต่างกันอย่างไร เสียง alarm ที่ดีควรเป็นยังไง**
+
+**ตอบ**
+
+- ช่วยให้ผู้ใช้รู้สถานะโดยไม่ต้องมองจอเสียงที่ดีควรสั้น ไม่รบกวน
+
+**6.3ถ้าต้องการเพิ่ม Desktop Notification ด้วย Browser Notification API จะแก้ไขฟังก์ชัน completePhase() ยังไง**
+
+**ตอบ**
+
+- เรียก new Notification() ตอนจบ phase
+
+## ส่วนที่ 7 : Progress Tracking & Stats
+
+**7.1Stats ต้องติดตามข้อมูลอะไร:**
+
+**ตอบ**
+
+- Pomodoros ที่เสร็จแล้ว
+- เวลารวมที่ทำงาน
+- Long breaks ที่เกิดขึ้น
+
+**7.2ตำแหน่งที่ดีที่สุดในการอัปเดต stats คือที่ไหน**
+
+**ตอบ**
+
+- ตอนจบ Work phase เท่านั้น
+
+**7.3ธีการบันทึก stats ไว้ใน LocalStorage ได้อย่างไร**
+
+**ตอบ**
+
+- ใช้ JSON.stringify(state) ตอนเปลี่ยนค่าโหลดด้วย JSON.parse() ตอนเริ่มแอป
+
+## ส่วนที่ 8 : Bug Detection
+
+**8.1ถ้า timer กำลังเดินอยู่ แล้วผู้ใช้เปิด DevTools ขนาดใหญ่ timer จะยังคงเดินต่อหรือไม่**
+
+**ตอบ**
+
+- เดินช้าลงได้ เพราะ browser throttle timer
+
+**8.2ถ้า completePhase() เรียก ในขณะที่ timer ยังวิ่งอยู่ จะเกิด memory leak ได้หรือไม่**
+
+**ตอบ**
+
+- เสี่ยง memory leak ถ้าไม่ clearInterval
+
+**8.3น mobile ถ้าผู้ใช้ล็อก screen ขณะ timer เดิน timer จะหยุดหรือยังคงเดิน วิธีแก้คืออะไร**
+
+**ตอบ**
+
+- timer อาจหยุดแก้ด้วย Background API หรือ Service Worker
+
+## ส่วนที่ 9 : Architecture & Code Quality
+
+**9.1ถ้าต้องการแยก Timer logic ออกจาก UI ควรสร้าง class อย่างไร**
+
+**ตอบ**
+
+- สร้าง class PomodoroTimerแยก state กับ UI ออกจากกัน
+
+**9.2Functions ที่มีมากควรจัดไว้ใน object เพื่อจัดการได้ดีขึ้นหรือไม่**
+
+**ตอบ**
+
+- ควร เพื่อให้โค้ดเป็นระบบและดูแลง่าย
+
+**9.3Code reusability - ส่วนไหนของโค้ดสามารถทำให้เป็น utility functions ได้**
+
+**ตอบ**
+
+- formatTime()
+- notification
+- sound
+
+## ส่วนที่ 10 : Enhancemants
+
+**10.1วิธีเพิ่ม Dark Mode ควรแก้ไข CSS/JS ส่วนไหนบ้าง**
+
+**ตอบ**
+
+- CSS class
+- toggle ด้วย JS
+
+**10.2วิธีบันทึกประวัติการใช้งาน (session history) คืออะไร**
+
+**ตอบ**
+
+- เก็บ array ของ session ลง LocalStorage
+
+**10.3วิธีเพิ่ม Keyboard Shortcuts (Space = Start/Pause, R = Reset) ควรใช้ event ไหน**
+
+**ตอบ**
+
+- ใช้ keydown event
+  เช่น Space = Start/Pause, R = Reset
